@@ -1,5 +1,6 @@
 --!strict
 --LOADED SERVICES--
+local AnalyticsService = game:GetService("AnalyticsService")
 local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -126,6 +127,7 @@ local ObjectService: ObjectServiceImpl = {
 						"Bite3",
 					}, 0.4, hitPart)
 					hitPart.Parent:Destroy()
+					AnalyticsService:LogOnboardingFunnelStepEvent(player, 3, "Ate food")
 				end
 			end
 
@@ -144,6 +146,7 @@ local ObjectService: ObjectServiceImpl = {
 						if humanoid.Health > 0 then
 							humanoid:TakeDamage(humanoid.Health)
 							PointService:IncrementPoints(player, p2Points)
+							AnalyticsService:LogOnboardingFunnelStepEvent(player, 3, "Ate Other Player")
 						end
 					end
 				end

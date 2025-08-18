@@ -3,6 +3,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local PlayerBadgeService = require(script.Parent.PlayerBadgeService)
 local GameConfig = require(ReplicatedStorage.Collection.GameConfig)
 
 local Fusion = require(ReplicatedStorage.Shared.fusion.Fusion)
@@ -45,6 +46,7 @@ local PointsService: PointsServiceImpl = {
 		humanoid:ApplyDescription(desc)
 		updatePoints:FireClient(player, pointsToSet)
 		pointsEvent:Fire(player, pointsToSet)
+		PlayerBadgeService.AwardPointBadges(player, points.Value)
 	end,
 	IncrementPoints = function(self, player, pointsToSet)
 		if MarketplaceService:UserOwnsGamePassAsync(player.UserId, 1406193916) then

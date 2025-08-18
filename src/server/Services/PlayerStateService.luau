@@ -1,4 +1,5 @@
 --!strict
+local AnalyticsService = game:GetService("AnalyticsService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PointService = require(script.Parent.PointService)
@@ -28,6 +29,8 @@ Players.PlayerAdded:Connect(function(player: Player)
 	player:SetAttribute("State", "Lobby")
 	player:LoadCharacter()
 	player:SetAttribute("RevivePoints", 1)
+
+	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Joined Game")
 
 	player.CharacterAdded:Connect(function(character)
 		if player:GetAttribute("State") == "Playing" then
@@ -76,8 +79,8 @@ workspace.Lobby.GamePart.Touched:Connect(function(otherPart: BasePart)
 		end
 		touchPartDebounces[player] = true
 		player:SetAttribute("State", "Playing")
-		print("player is playing")
 		player:LoadCharacter()
+		AnalyticsService:LogOnboardingFunnelStepEvent(player, 2, "Started Playing")
 		task.delay(2, function()
 			touchPartDebounces[player] = false
 		end)

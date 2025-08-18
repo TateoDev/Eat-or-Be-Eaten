@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 type AudioControllerImpl = {
 	playLocalSound: (soundName: string | { string }, volume: number?, parent: Instance?) -> (),
 }
@@ -8,7 +9,8 @@ local playSound: RemoteEvent = Remotes.PlaySound
 
 local assets = ReplicatedStorage:WaitForChild("Assets")
 local sounds = assets.Sounds
-local sfx = sounds.SFX
+local sfx: Folder = sounds.SFX
+local music: Folder = sounds.Music
 
 local lastParent = nil
 
@@ -29,9 +31,20 @@ local AudioController: AudioControllerImpl = {
 		end
 
 		if typeof(soundName) == "string" then
-			soundToPlay = sfx:FindFirstChild(soundName):Clone()
+			local potentialsound = sfx:FindFirstChild(soundName)
+			if potentialsound then
+				soundToPlay = potentialsound:Clone()
+			else
+				error(`Unable to find sound {soundName}`)
+			end
 		elseif typeof(soundName) == "table" then
-			soundToPlay = sfx:FindFirstChild(soundName[math.random(#soundName)]):Clone()
+			local ran = soundName[math.random(#soundName)]
+			local potentialsound = sfx:FindFirstChild(ran)
+			if potentialsound then
+				soundToPlay = potentialsound
+			else
+				error(`Unable to find sound {ran}`)
+			end
 		end
 
 		soundToPlay.Volume = volume or 1
@@ -48,6 +61,21 @@ local AudioController: AudioControllerImpl = {
 		end)
 	end,
 }
+
+--handle music
+local lastSong = nil
+task.spawn(function()
+	while true do
+		local potentialMusic = music:GetChildren()
+		local chosenSong: Sound = nil
+		repeat
+			chosenSong = potentialMusic[math.random(#potentialMusic)]
+		until chosenSong ~= nil and chosenSong ~= lastSong
+		lastSong = chosenSong
+		chosenSong:Play()
+		chosenSong.Ended:Wait()
+	end
+end)
 
 playSound.OnClientEvent:Connect(AudioController.playLocalSound)
 
