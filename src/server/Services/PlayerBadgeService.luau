@@ -18,14 +18,24 @@ local PlayerBadgeService: PlayerBadgeServiceImpl = {
 	AwardPointBadges = function(player, points)
 		for pointsValue, badgeID in POINT_BADGES do
 			if points >= pointsValue then
-				BadgeService:AwardBadge(player.UserId, badgeID)
+				local success, ownsBadge = pcall(function()
+					BadgeService:UserHasBadgeAsync(player.UserId, badgeID)
+				end)
+				if success and not ownsBadge then
+					BadgeService:AwardBadge(player.UserId, badgeID)
+				end
 			end
 		end
 	end,
 }
 
 Players.PlayerAdded:Connect(function(player)
-	BadgeService:AwardBadge(player.UserId, JOIN_BADGE)
+	local success, ownsBadge = pcall(function()
+		BadgeService:UserHasBadgeAsync(player.UserId, JOIN_BADGE)
+	end)
+	if success and not ownsBadge then
+		BadgeService:AwardBadge(player.UserId, JOIN_BADGE)
+	end
 end)
 
 return PlayerBadgeService

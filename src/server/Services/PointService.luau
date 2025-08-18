@@ -81,7 +81,7 @@ Players.PlayerAdded:Connect(function(player: Player)
 			Tag = OverheadTag,
 		})
 		local pointsValue = tagScope:Value(1)
-		local isVip = tagScope:Value(MarketplaceService:UserOwnsGamePassAsync(player.UserId, 1406193916))
+		local isVip = MarketplaceService:UserOwnsGamePassAsync(player.UserId, 1406193916)
 
 		local _tag = tagScope:Tag({
 			Text = tagScope:Computed(function(use, _)
@@ -89,14 +89,7 @@ Players.PlayerAdded:Connect(function(player: Player)
 				return `{peek(pointsValue)}`
 			end),
 			Parent = head,
-			Color = tagScope:Computed(function(use, _)
-				use(isVip)
-				if isVip then
-					return GameConfig.Colors.Magenta
-				else
-					return GameConfig.Colors.Yellow
-				end
-			end),
+			Color = if isVip then GameConfig.Colors.Magenta else GameConfig.Colors.Yellow,
 			Height = 3,
 		})
 
