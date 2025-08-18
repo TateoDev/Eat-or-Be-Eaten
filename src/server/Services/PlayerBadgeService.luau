@@ -14,15 +14,23 @@ local POINT_BADGES = {
 
 local JOIN_BADGE = 2887094190919384
 
+-- I could set this up when the player joins, but even just doing this while save several async calls
+local playerBadges: { [Player]: { [number]: boolean } } = {}
+
 local PlayerBadgeService: PlayerBadgeServiceImpl = {
 	AwardPointBadges = function(player, points)
 		for pointsValue, badgeID in POINT_BADGES do
+			if playerBadges[player][badgeID] == true then
+				continue
+			end
+
 			if points >= pointsValue then
 				local success, ownsBadge = pcall(function()
-					BadgeService:UserHasBadgeAsync(player.UserId, badgeID)
+					return BadgeService:UserHasBadgeAsync(player.UserId, badgeID)
 				end)
 				if success and not ownsBadge then
 					BadgeService:AwardBadge(player.UserId, badgeID)
+					playerBadges[player][badgeID] = true
 				end
 			end
 		end
@@ -31,11 +39,15 @@ local PlayerBadgeService: PlayerBadgeServiceImpl = {
 
 Players.PlayerAdded:Connect(function(player)
 	local success, ownsBadge = pcall(function()
-		BadgeService:UserHasBadgeAsync(player.UserId, JOIN_BADGE)
+		return BadgeService:UserHasBadgeAsync(player.UserId, JOIN_BADGE)
 	end)
 	if success and not ownsBadge then
 		BadgeService:AwardBadge(player.UserId, JOIN_BADGE)
 	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	playerBadges[player] = nil
 end)
 
 return PlayerBadgeService
