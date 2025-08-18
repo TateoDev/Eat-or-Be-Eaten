@@ -39,9 +39,10 @@ local AudioController: AudioControllerImpl = {
 			end
 		elseif typeof(soundName) == "table" then
 			local ran = soundName[math.random(#soundName)]
+
 			local potentialsound = sfx:FindFirstChild(ran)
 			if potentialsound then
-				soundToPlay = potentialsound
+				soundToPlay = potentialsound:Clone()
 			else
 				error(`Unable to find sound {ran}`)
 			end
