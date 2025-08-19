@@ -44,6 +44,7 @@ Players.PlayerAdded:Connect(function(player)
 	if success and not ownsBadge then
 		BadgeService:AwardBadge(player.UserId, JOIN_BADGE)
 	end
+	playerBadges[player] = {}
 end)
 
 Players.PlayerRemoving:Connect(function(player)
