@@ -27,8 +27,8 @@ local SocialController = {
 					Color = Color3.new(0.760784, 0.815686, 0.894118),
 					TextStrokeColor = Color3.new(1, 1, 1),
 
-					Position = UDim2.fromScale(0.05, 0.7),
-					Size = UDim2.fromScale(0.1, 0.1),
+					Position = UDim2.fromScale(0.95, 0.6),
+					Size = UDim2.fromScale(0.15, 0.15),
 
 					OnClick = function()
 						local success, canSend = pcall(function()

@@ -65,6 +65,7 @@ local AudioController: AudioControllerImpl = {
 
 --handle music
 local lastSong = nil
+
 task.spawn(function()
 	while true do
 		local potentialMusic = music:GetChildren()
@@ -73,6 +74,13 @@ task.spawn(function()
 			chosenSong = potentialMusic[math.random(#potentialMusic)]
 		until chosenSong ~= nil and chosenSong ~= lastSong
 		lastSong = chosenSong
+
+		for _, song in music:GetChildren() do
+			if song:IsA("Sound") then
+				song:Stop()
+			end
+		end
+
 		chosenSong:Play()
 		chosenSong.Ended:Wait()
 	end

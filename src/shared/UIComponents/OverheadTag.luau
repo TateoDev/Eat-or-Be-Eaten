@@ -23,7 +23,7 @@ local function OverHeadTag(
 		Adornee = props.Parent,
 		AlwaysOnTop = true,
 		Size = props.Size or DEFAULT_SIZE,
-		MaxDistance = 30,
+		MaxDistance = 100,
 
 		StudsOffsetWorldSpace = if typeof(props.Height) == "number"
 			then Vector3.new(0, props.Height, 0)
